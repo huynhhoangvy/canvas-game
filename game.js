@@ -15,19 +15,32 @@ let ctx;
 
 canvas = document.createElement("canvas");
 ctx = canvas.getContext("2d");
+// function setCanvasSize(){
+//   canvas.width = 768;
+//   canvas.height = 432;
+// }
+
 canvas.width = 768;
 canvas.height = 432;
+
 document.body.appendChild(canvas);
 
-let bgReady, heroReady, monsterReady, rockReady;
-let bgImage, heroImage, monsterImage, rockImage;
+let bgReady, heroReady, monsterReady, rockReady, ghostReady;
+let bgImage, heroImage, monsterImage, rockImage, ghostImage;
 
 let startTime = Date.now();
-const SECONDS_PER_ROUND = 30;
+const SECONDS_PER_ROUND = 60;
 let elapsedTime = 0;
 
 let monstersCaught = 0;
-const GOAL = 2;
+const GOAL = 20;
+
+// let x 
+// x = playSoundEffect();
+
+// function playSoundEffect () {
+//   x.play()
+// }
 
 function loadImages() {
   bgImage = new Image();
@@ -35,20 +48,21 @@ function loadImages() {
     // show the background image
     bgReady = true;
   };
-  bgImage.src = "images/jungle-background.jpg";
+  bgImage.src = "images/sky.jpg";
+
   heroImage = new Image();
   heroImage.onload = function () {
     // show the hero image
     heroReady = true;
   };
-  heroImage.src = "images/wolf.png";
+  heroImage.src = "images/hero1.png";
 
   monsterImage = new Image();
   monsterImage.onload = function () {
     // show the monster image
     monsterReady = true;
   };
-  monsterImage.src = "images/ape.png";
+  monsterImage.src = "images/monster1.png";
 
   rockImage = new Image();
   rockImage.onload = function () {
@@ -56,6 +70,13 @@ function loadImages() {
     rockReady = true;
   };
   rockImage.src = "images/rock.png";
+
+  ghostImage = new Image();
+  ghostImage.onload = function () {
+    // show the monster image
+    ghostReady = true;
+  };
+  ghostImage.src = "images/ghost.png";
 }
 
 /** 
@@ -77,7 +98,7 @@ let heroY = canvas.height / 2;
 //   y = canvas.height / 2,
 // }
 
-let monsterX, monsterY, rockX, rockY
+let monsterX, monsterY, rockX, rockY, ghostX, ghostY;
 let monsterDirectionX = 1; 
 let monsterDirectionY = 1;
 
@@ -86,7 +107,12 @@ let monsterDirectionY = 1;
 
 spawnMonster();
 spawnRock();
+spawnGhost();
 
+function spawnGhost () {
+  ghostX = (Math.floor(Math.random() * (canvas.width - 32)) + 1);
+  ghostY = (Math.floor(Math.random() * (canvas.height - 32)) + 1);
+}
 
 
 function spawnRock () {
@@ -132,7 +158,7 @@ let update = function () {
 
   if (38 in keysDown) { // Player is holding up key
     heroY -= 5;
-  }
+  } 
   if (40 in keysDown) { // Player is holding down key
     heroY += 5;
   }
@@ -143,20 +169,66 @@ let update = function () {
     heroX += 5;
   }
 
-  // monsterX += (5 * monsterDirectionX);
-  // if (monsterX > canvas.width - 32 || monsterX < 0) {
-  //   monsterDirectionX = -monsterDirectionX;
-  // }
-  // monsterY += (5 * monsterDirectionY);
-  // if (monsterY > canvas.height - 32 || monsterY < 0) {
-  //   monsterDirectionY = -monsterDirectionY;
-  // }
+  monsterX += (5 * monsterDirectionX);
+  if (monsterX > canvas.width - 32 || monsterX < 0) {
+    monsterDirectionX = -monsterDirectionX;
+  }
+  monsterY += (5 * monsterDirectionY);
+  if (monsterY > canvas.height - 32 || monsterY < 0) {
+    monsterDirectionY = -monsterDirectionY;
+  }
 
   heroX = Math.min(canvas.width - 32, heroX);
   heroX = Math.max(0, heroX);
   heroY = Math.min(canvas.height - 32, heroY);
   heroY = Math.max(0, heroY);
 
+
+  // console.log("herorX " + heroX + " heroY " + heroY + " rockX " + rockX + " rockY " + rockY )
+  // if (heroY + 32 >= rockY && Math.abs(heroX - rockX) < 32) {
+  //   heroY = rockY - 32;
+  // }
+  if (38 in keysDown && Math.abs(heroX - rockX) < 32) { // Player is holding up key
+      if (rockY - heroY <= 32 && heroY - rockY <= 32) {
+      heroY = rockY + 32;
+    }
+  } else if (40 in keysDown && Math.abs(heroX - rockX) < 32) { // Player is holding down key
+      if (heroY - rockY <= 32 && rockY - heroY <= 32) {
+      heroY = rockY - 32;
+    }
+  } else if (37 in keysDown && Math.abs(heroY - rockY) < 32) { // Player is holding left key
+      if (rockX - heroX <= 32 && heroX - rockX <= 32) {
+      heroX = rockX + 32;
+    }
+  } else if (39 in keysDown && Math.abs(heroY - rockY) < 32) { // Player is holding right key
+      if (heroX - rockX <= 32 && rockX - heroX <= 32) {
+      heroX = rockX - 32;
+    }
+  }
+
+
+
+
+
+
+  if (38 in keysDown && Math.abs(heroX - ghostX) < 32) { // Player is holding up key
+    if (ghostY - heroY <= 32 && heroY - ghostY <= 32) {
+    heroY = ghostY + 32;
+  }
+} else if (40 in keysDown && Math.abs(heroX - ghostX) < 32) { // Player is holding down key
+    if (heroY - ghostY <= 32 && ghostY - heroY <= 32) {
+    heroY = ghostY - 32;
+  }
+} else if (37 in keysDown && Math.abs(heroY - ghostY) < 32) { // Player is holding left key
+    if (ghostX - heroX <= 32 && heroX - ghostX <= 32) {
+    heroX = ghostX + 32;
+  }
+} else if (39 in keysDown && Math.abs(heroY - ghostY) < 32) { // Player is holding right key
+    if (heroX - ghostX <= 32 && ghostX - heroX <= 32) {
+    heroX = ghostX - 32;
+  }
+}
+  
   // Check if player and monster collided. Our images
   // are about 32 pixels big.
   if (
@@ -166,15 +238,25 @@ let update = function () {
     && monsterY <= (heroY + 32)
   ) {
     monstersCaught += 1;
-    console.log(monstersCaught)
 
   spawnMonster();
+  spawnRock();
+  spawnGhost();
+
+ 
+  
 
     // Pick a new location for the monster.
     // Note: Change this to place the monster at a new, random location.
     // monsterDirectionX = -monsterDirectionX;
     // monsterDirectionY = -monsterDirectionY;
   }
+
+
+
+
+
+
 };
 
 /**
@@ -193,6 +275,9 @@ var render = function () {
   if (rockReady) {
     ctx.drawImage(rockImage,rockX, rockY)
   }
+  if (ghostReady) {
+    ctx.drawImage(ghostImage,ghostX, ghostY)
+  }
   ctx.fillStyle = "red";
   ctx.font = "bold 15px Helvetica, Arial, sans-serif";
   ctx.fillText(`Seconds Remaining: ${SECONDS_PER_ROUND - elapsedTime}`, 20, 100);
@@ -208,11 +293,28 @@ var render = function () {
 var main = function () {
   update(); 
   render();
+console.log("monsterscaught" + monstersCaught)
+  if (monstersCaught == 5) {
+    heroImage.src = "images/hero2.png";
+    monsterImage.src = "images/monster2.png";
+  } else if (monstersCaught > 5 && monstersCaught == 10) {
+    heroImage.src = "images/hero3.png";
+    monsterImage.src = "images/monster3.png";
+    bgImage.src = "images/forest1.jpg";
+    // canvas.width = 1024;
+    // canvas.height = 576;
+  } else if (monstersCaught > 10 && monstersCaught == 15) {
+    heroImage.src = "images/hero5.png";
+    monsterImage.src = "images/monster4.png";
+  } else if (monstersCaught > 15 && monstersCaught == 20 ) {
+    heroImage.src = "images/hero4.png";
+  }
+
   if (monstersCaught == GOAL) {
     ctx.fillText(`Elapsed Time: ${elapsedTime}`, 20, 140);
     return;
   } else if ((SECONDS_PER_ROUND - elapsedTime) == 0) {
-    ctx.fillText(`Brilliant!`, 20, 160);
+    ctx.fillText(`You SUCK!!!!!!`, 20, 160);
     return;
   }
   // Request to do this again ASAP. This is a special method
