@@ -15,16 +15,19 @@ let ctx;
 
 canvas = document.createElement("canvas");
 ctx = canvas.getContext("2d");
-canvas.width = 512;
-canvas.height = 480;
+canvas.width = 768;
+canvas.height = 432;
 document.body.appendChild(canvas);
 
-let bgReady, heroReady, monsterReady;
-let bgImage, heroImage, monsterImage;
+let bgReady, heroReady, monsterReady, rockReady;
+let bgImage, heroImage, monsterImage, rockImage;
 
 let startTime = Date.now();
 const SECONDS_PER_ROUND = 30;
 let elapsedTime = 0;
+
+let monstersCaught = 0;
+const GOAL = 2;
 
 function loadImages() {
   bgImage = new Image();
@@ -32,20 +35,27 @@ function loadImages() {
     // show the background image
     bgReady = true;
   };
-  bgImage.src = "images/background.png";
+  bgImage.src = "images/jungle-background.jpg";
   heroImage = new Image();
   heroImage.onload = function () {
     // show the hero image
     heroReady = true;
   };
-  heroImage.src = "images/hero.png";
+  heroImage.src = "images/wolf.png";
 
   monsterImage = new Image();
   monsterImage.onload = function () {
     // show the monster image
     monsterReady = true;
   };
-  monsterImage.src = "images/monster.png";
+  monsterImage.src = "images/ape.png";
+
+  rockImage = new Image();
+  rockImage.onload = function () {
+    // show the monster image
+    rockReady = true;
+  };
+  rockImage.src = "images/rock.png";
 }
 
 /** 
@@ -61,8 +71,33 @@ function loadImages() {
 let heroX = canvas.width / 2;
 let heroY = canvas.height / 2;
 
-let monsterX = 100;
-let monsterY = 100;
+// var hero = {
+//   speed : 256,
+//   x = canvas.width / 2,
+//   y = canvas.height / 2,
+// }
+
+let monsterX, monsterY, rockX, rockY
+let monsterDirectionX = 1; 
+let monsterDirectionY = 1;
+
+// monsterX = 100;
+// monsterY = 100;
+
+spawnMonster();
+spawnRock();
+
+
+
+function spawnRock () {
+  rockX = (Math.floor(Math.random() * (canvas.width - 32)) + 1);
+  rockY = (Math.floor(Math.random() * (canvas.height - 32)) + 1);
+}
+
+function spawnMonster () {
+  monsterX = (Math.floor(Math.random() * (canvas.width - 32)) + 1);
+  monsterY = (Math.floor(Math.random() * (canvas.height - 32)) + 1);
+}
 
 /** 
  * Keyboard Listeners
@@ -108,6 +143,20 @@ let update = function () {
     heroX += 5;
   }
 
+  // monsterX += (5 * monsterDirectionX);
+  // if (monsterX > canvas.width - 32 || monsterX < 0) {
+  //   monsterDirectionX = -monsterDirectionX;
+  // }
+  // monsterY += (5 * monsterDirectionY);
+  // if (monsterY > canvas.height - 32 || monsterY < 0) {
+  //   monsterDirectionY = -monsterDirectionY;
+  // }
+
+  heroX = Math.min(canvas.width - 32, heroX);
+  heroX = Math.max(0, heroX);
+  heroY = Math.min(canvas.height - 32, heroY);
+  heroY = Math.max(0, heroY);
+
   // Check if player and monster collided. Our images
   // are about 32 pixels big.
   if (
@@ -116,10 +165,15 @@ let update = function () {
     && heroY <= (monsterY + 32)
     && monsterY <= (heroY + 32)
   ) {
+    monstersCaught += 1;
+    console.log(monstersCaught)
+
+  spawnMonster();
+
     // Pick a new location for the monster.
     // Note: Change this to place the monster at a new, random location.
-    monsterX = monsterX + 50;
-    monsterY = monsterY + 70;
+    // monsterDirectionX = -monsterDirectionX;
+    // monsterDirectionY = -monsterDirectionY;
   }
 };
 
@@ -136,7 +190,14 @@ var render = function () {
   if (monsterReady) {
     ctx.drawImage(monsterImage, monsterX, monsterY);
   }
+  if (rockReady) {
+    ctx.drawImage(rockImage,rockX, rockY)
+  }
+  ctx.fillStyle = "red";
+  ctx.font = "bold 15px Helvetica, Arial, sans-serif";
   ctx.fillText(`Seconds Remaining: ${SECONDS_PER_ROUND - elapsedTime}`, 20, 100);
+  ctx.fillText(`Monsters caugth: ${monstersCaught}`, 20, 120);
+  
 };
 
 /**
@@ -147,6 +208,13 @@ var render = function () {
 var main = function () {
   update(); 
   render();
+  if (monstersCaught == GOAL) {
+    ctx.fillText(`Elapsed Time: ${elapsedTime}`, 20, 140);
+    return;
+  } else if ((SECONDS_PER_ROUND - elapsedTime) == 0) {
+    ctx.fillText(`Brilliant!`, 20, 160);
+    return;
+  }
   // Request to do this again ASAP. This is a special method
   // for web browsers. 
   requestAnimationFrame(main);
