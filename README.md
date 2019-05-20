@@ -47,6 +47,9 @@ The following **additional** features are implemented:
 * [x] Randomly spawn obstacles to increase the difficulty.
 * [x] Switch heroes, monster and backgrounds -- for fun.
 
+## View as
+
+https://confident-jang-a16ee0.netlify.com
 
 
 ## Time Spent and Lessons Learned
