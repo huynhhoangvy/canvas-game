@@ -278,6 +278,10 @@ var render = function () {
   if (ghostReady) {
     ctx.drawImage(ghostImage,ghostX, ghostY)
   }
+  // if (monstersCaught == 5) {
+  //   monsterX += (5 * monsterDirectionX);
+  // }
+
   ctx.fillStyle = "red";
   ctx.font = "bold 15px Helvetica, Arial, sans-serif";
   ctx.fillText(`Seconds Remaining: ${SECONDS_PER_ROUND - elapsedTime}`, 20, 100);
@@ -294,29 +298,66 @@ var main = function () {
   update(); 
   render();
 console.log("monsterscaught" + monstersCaught)
-  if (monstersCaught == 5) {
+  // if (monstersCaught == 5) {
+  //   heroImage.src = "images/hero2.png";
+  //   monsterImage.src = "images/monster2.png";
+  //   monsterX += (7 * monsterDirectionX);
+  //   monsterY += (7 * monsterDirectionY);
+  //   console.log("change speed")
+  // } else if (monstersCaught > 5 && monstersCaught == 10) {
+  //   heroImage.src = "images/hero3.png";
+  //   monsterImage.src = "images/monster3.png";
+  //   bgImage.src = "images/forest1.jpg";
+  //   monsterX += (9 * monsterDirectionX);
+  //   monsterY += (9 * monsterDirectionY);
+  //   // canvas.width = 1024;
+  //   // canvas.height = 576;
+  // } else if (monstersCaught > 10 && monstersCaught == 15) {
+  //   heroImage.src = "images/hero5.png";
+  //   monsterImage.src = "images/monster4.png";
+  //   monsterX += (11 * monsterDirectionX);
+  //   monsterY += (11 * monsterDirectionY);
+  // } else if (monstersCaught > 15 && monstersCaught == 20 ) {
+  //   heroImage.src = "images/hero4.png";
+  // }
+
+  // if (monstersCaught == GOAL) {
+  //   ctx.fillText(`Elapsed Time: ${elapsedTime}`, 20, 140);
+  //   return;
+  // } else if ((SECONDS_PER_ROUND - elapsedTime) == 0) {
+  //   ctx.fillText(`You SUCK!!!!!!`, 20, 160);
+  //   return;
+  // }
+
+  if (monstersCaught >= 5 && monstersCaught < 10) {
     heroImage.src = "images/hero2.png";
     monsterImage.src = "images/monster2.png";
-  } else if (monstersCaught > 5 && monstersCaught == 10) {
+    monsterX += (7 * monsterDirectionX);
+    monsterY += (7 * monsterDirectionY);
+    console.log("change speed")
+  } else if (monstersCaught >= 10 && monstersCaught < 15) {
     heroImage.src = "images/hero3.png";
     monsterImage.src = "images/monster3.png";
     bgImage.src = "images/forest1.jpg";
+    monsterX += (9 * monsterDirectionX);
+    monsterY += (9 * monsterDirectionY);
     // canvas.width = 1024;
     // canvas.height = 576;
-  } else if (monstersCaught > 10 && monstersCaught == 15) {
+  } else if (monstersCaught >= 15 && monstersCaught < 20) {
     heroImage.src = "images/hero5.png";
     monsterImage.src = "images/monster4.png";
-  } else if (monstersCaught > 15 && monstersCaught == 20 ) {
-    heroImage.src = "images/hero4.png";
-  }
-
+    monsterX += (11 * monsterDirectionX);
+    monsterY += (11 * monsterDirectionY);
+  } 
   if (monstersCaught == GOAL) {
     ctx.fillText(`Elapsed Time: ${elapsedTime}`, 20, 140);
     return;
   } else if ((SECONDS_PER_ROUND - elapsedTime) == 0) {
+    // console.log("this shit")
     ctx.fillText(`You SUCK!!!!!!`, 20, 160);
     return;
   }
+
   // Request to do this again ASAP. This is a special method
   // for web browsers. 
   requestAnimationFrame(main);
