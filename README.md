@@ -46,8 +46,7 @@ The following **additional** features are implemented:
 
 * [x] Randomly spawn obstacles to increase the difficulty.
 * [x] Switch heroes, monster and backgrounds -- for fun.
-
-=======
+* [x] Add speed increment for monster after being caught a certain times.
 
 ## View as
 
