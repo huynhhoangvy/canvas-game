@@ -50,8 +50,7 @@ The following **additional** features are implemented:
 
 ## View as
 
-https://confident-jang-a16ee0.netlify.com
-
+https://canvas-game-project.netlify.com/
 
 ## Time Spent and Lessons Learned
 
